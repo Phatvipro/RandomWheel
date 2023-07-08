@@ -25,6 +25,13 @@ namespace RotaryWheelDemo
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        private IList<string> items;
+
+        public IList<string> Items
+        {
+            get => items;
+            set => items = value;
+        }
         public MainPage()
         {
             this.InitializeComponent();
