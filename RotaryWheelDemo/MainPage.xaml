@@ -1,4 +1,4 @@
-﻿<Page
+<Page
     x:Class="RotaryWheelDemo.MainPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -14,5 +14,7 @@
             BackgroundColor="Purple" 
             ForegroundColor="White" />
         <TextBlock Text="{Binding SelectedItemValue, ElementName=rotaryWheelDemo}"  />
+        <TextBox x:Name="input" AcceptsReturn="True"  />
+        <Button x:Name="addtext_Click" Click=" UpdateSlicesButton_Click" Content="Add Text" />
     </StackPanel>
 </Page>
