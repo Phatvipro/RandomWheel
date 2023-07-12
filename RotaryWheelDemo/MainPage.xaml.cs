@@ -59,6 +59,10 @@ namespace RotaryWheelDemo
                 input.Text = string.Empty; // Clear the input TextBox
             }
         }
+        private void spinButton_Click(object sender, RoutedEventArgs e)
+        {
+            rotaryWheelDemo.Spin(2);
+        }
 
     }
 }
