@@ -1,25 +1,27 @@
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using RotaryWheelUserControl;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Controls.Primitives;
+using System;
+
+// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
 namespace RotaryWheelDemo
 {
+    /// <summary>
+    /// An empty page that can be used on its own or navigated to within a Frame.
+    /// </summary>
     public sealed partial class MainPage : Page
     {
-        private List<string> slicesList;
-
         public MainPage()
         {
-            this.InitializeComponent();
-
-            slicesList = new List<string>();
-            rotaryWheelDemo.Slices = slicesList.ToArray();
-
+            this.InitializeComponent();          
             rotaryWheelDemo.PropertyChanged += RotaryWheelDemo_PropertyChanged;
+            rotaryWheelDemo.SpinEnded += (e, a) =>
+            {
+                new Result(rotaryWheelDemo.SelectedItemValue).ShowAsync();
+            };
         }
 
         private void RotaryWheelDemo_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -28,41 +30,36 @@ namespace RotaryWheelDemo
             switch (e.PropertyName)
             {
                 case "SelectedItemValue":
-                    {
-                        Debug.WriteLine(rotaryWheel.SelectedItemValue);
-                        break;
-                    }
+                {
+                    Debug.WriteLine(rotaryWheel.SelectedItemValue);
+                    break;
+                }
             }
-        }
 
-        private void UpdateSlicesButton_Click(object sender, RoutedEventArgs e)
-        {
-            AddTextToSlices();
-        }
-
-        private void Input_KeyDown(object sender, KeyRoutedEventArgs e)
-        {
-            if (e.Key == Windows.System.VirtualKey.Enter)
-            {
-                AddTextToSlices();
-                e.Handled = true;
-            }
-        }
-
-        private void AddTextToSlices()
-        {
-            if (!string.IsNullOrWhiteSpace(input.Text))
-            {
-                string[] enteredText = input.Text.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-                slicesList.AddRange(enteredText);
-                rotaryWheelDemo.Slices = slicesList.ToArray();
-                input.Text = string.Empty; // Clear the input TextBox
-            }
         }
         private void spinButton_Click(object sender, RoutedEventArgs e)
         {
-            rotaryWheelDemo.Spin(2);
+            
+            rotaryWheelDemo.Spin(comboBox.SelectedIndex);           
         }
+        private void TextBox_TextChanging(TextBox sender, TextBoxTextChangingEventArgs args)
+        {
+            rotaryWheelDemo.Slices = textBoxabc.Text.Trim().Split('\r');
+        }
+
+        public void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            
+        }
+        private void ButtonRandom_Click(object sender, RoutedEventArgs e)
+        {
+            Random random = new Random();
+            int selectedIndex = random.Next(rotaryWheelDemo.Slices.Count);
+            comboBox.SelectedIndex = selectedIndex;
+            rotaryWheelDemo.Spin2(selectedIndex);
+        }
+
+
 
     }
 }
