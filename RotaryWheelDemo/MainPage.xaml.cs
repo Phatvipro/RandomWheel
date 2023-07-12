@@ -1,20 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI;
+﻿using System.Diagnostics;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 using RotaryWheelUserControl;
+using System;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -27,17 +15,12 @@ namespace RotaryWheelDemo
     {
         public MainPage()
         {
-            this.InitializeComponent();
-
-            rotaryWheelDemo.Slices = new[]
-            {
-                "Off",
-                "High",
-                "Medium",
-                "Low",
-            };
-
+            this.InitializeComponent();          
             rotaryWheelDemo.PropertyChanged += RotaryWheelDemo_PropertyChanged;
+            rotaryWheelDemo.SpinEnded += (e, a) =>
+            {
+                new Result(rotaryWheelDemo.SelectedItemValue).ShowAsync();
+            };
         }
 
         private void RotaryWheelDemo_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -52,6 +35,28 @@ namespace RotaryWheelDemo
                 }
             }
 
+        }
+        private void spinButton_Click(object sender, RoutedEventArgs e)
+        {
+            
+            rotaryWheelDemo.Spin(comboBox.SelectedIndex);           
+        }
+        private void TextBox_TextChanging(TextBox sender, TextBoxTextChangingEventArgs args)
+        {
+            rotaryWheelDemo.Slices = textBoxabc.Text.Trim().Split('\r');
+        }
+
+        public void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            
+        }
+
+        private void ButtonRandom_Click(object sender, RoutedEventArgs e)
+        {
+            Random random = new Random();
+            int selectedIndex = random.Next(rotaryWheelDemo.Slices.Count);
+            comboBox.SelectedIndex = selectedIndex;
+            rotaryWheelDemo.Spin2(selectedIndex);
         }
     }
 }
