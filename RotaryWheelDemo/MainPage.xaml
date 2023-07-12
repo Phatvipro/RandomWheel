@@ -35,7 +35,7 @@
                 HorizontalAlignment="Left"
                 Click="spinButton_Click" />
         <ComboBox x:Name="comboBox"
-                  Foreground="White"
+                  
                   ItemsSource="{Binding Slices, ElementName=rotaryWheelDemo}"
                   SelectedItem="{Binding SelectedItemValue, ElementName=rotaryWheelDemo}"            
                   SelectionChanged="ComboBox_SelectionChanged"
