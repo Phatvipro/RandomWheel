@@ -3,10 +3,12 @@
 
 namespace RotaryWheelUserControl
 {
+    using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Collections.Specialized;
     using System.ComponentModel;
+    using System.Diagnostics;
     using System.Linq;
     using System.Runtime.CompilerServices;
     using RotaryWheelUserControl.Extensions;
@@ -20,6 +22,7 @@ namespace RotaryWheelUserControl
         private readonly ObservableCollection<PieSlice> _pieSlices = new ObservableCollection<PieSlice>();
 
         public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler SpinEnded;
 
         private Color _backgroundColor = Colors.Black;
         public Color BackgroundColor
@@ -150,14 +153,14 @@ namespace RotaryWheelUserControl
             gridRotateTransform.CenterX = this.RenderSize.Width/2;
             gridRotateTransform.CenterY = this.RenderSize.Height/2;
 
-            var startAngle = 0;
+            double startAngle = 0d;
             var color = BackgroundColor;
 
             if (Slices != null)
             {
                 foreach (var slice in Slices)
                 {
-                    var sliceSize = 360/Slices.Count();
+                    double sliceSize = 360d/Slices.Count();
 
                     var pieSlice = new PieSlice
                     {
@@ -188,16 +191,70 @@ namespace RotaryWheelUserControl
         private void layoutRoot_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
         {
             var angleFromYAxis = 360 - Angle;
-            SelectedItem = _pieSlices
-                .SingleOrDefault(p => p.StartAngle <= angleFromYAxis && (p.StartAngle + p.Angle) > angleFromYAxis);
-
+            SelectedItem = _pieSlices.SingleOrDefault(p => p.StartAngle <= angleFromYAxis && (p.StartAngle + p.Angle) > angleFromYAxis);
             var finalAngle = SelectedItem.StartAngle + SelectedItem.Angle / 2;
-
             doubleAnimation.From = Angle;
-            doubleAnimation.To = 360 - finalAngle;
+            doubleAnimation.To = 360  - finalAngle;
+            storyBoard.SpeedRatio = 0.1;
             storyBoard.Begin();
+            storyBoard.Completed += (_, args) =>
+            {
+
+            };
+
+
 
             Angle = 360 - finalAngle;
+        }
+
+        /// <summary>
+        /// spin the wheel with defined angle
+        /// </summary>
+        /// <param name="angle"> spin angle
+        /// </param>
+        public void Spin(double angle)
+        {
+            Angle = angle;
+            layoutRoot_ManipulationCompleted(null, null);
+        }
+
+        private void phase1(object _, object args)
+        {
+            storyBoard.Completed -= phase1;
+            storyBoard.Completed += phase2;
+            storyBoard.SpeedRatio = 0.3;
+            storyBoard.Begin();
+            Debug.WriteLine("2nd phase");
+        }
+        private void phase2(object _, object args)
+        {
+            storyBoard.Completed -= phase2;
+            storyBoard.Completed += phase3;
+            storyBoard.SpeedRatio = 0.2;
+            storyBoard.Begin();
+            Debug.WriteLine("3rd phase");
+            
+        }
+        private void phase3(object _, object args)
+        {
+            storyBoard.Completed -= phase3;
+            SpinEnded.Invoke(null,null);
+
+        }
+        public void Spin(int index)
+        {
+            Random rnd = new Random();
+            SelectedItem = _pieSlices[index];
+            var finalAngle = SelectedItem.StartAngle + SelectedItem.Angle / 2;
+            doubleAnimation.From = Angle;
+            doubleAnimation.To = 360*5 - finalAngle;
+            storyBoard.SpeedRatio = 0.5;
+            storyBoard.Begin();
+            Debug.WriteLine("1st phase");
+            storyBoard.Completed += phase1;
+
+            //Angle = 360 - finalAngle;
+
         }
 
         private void SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
@@ -209,5 +266,6 @@ namespace RotaryWheelUserControl
                 eventHandler?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             }
         }
+
     }
 }
