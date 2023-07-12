@@ -256,7 +256,7 @@ namespace RotaryWheelUserControl
             //Angle = 360 - finalAngle;
 
         }
-        public void Spin2(int index)
+        /*public void Spin2(int index)
         {
             Random rnd = new Random();
             SelectedItem = _pieSlices[index];
@@ -272,7 +272,7 @@ namespace RotaryWheelUserControl
             Debug.WriteLine("1st phase");
             storyBoard.Completed += phase1;
         }
-
+        */
 
         private void SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
         {
