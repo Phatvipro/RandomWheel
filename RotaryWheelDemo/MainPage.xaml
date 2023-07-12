@@ -32,10 +32,10 @@
         </TextBox>
         <Button x:Name="spinButton"
                 Content="Spin"
-                HorizontalAlignment="Center"
+                HorizontalAlignment="Left"
                 Click="spinButton_Click" />
         <ComboBox x:Name="comboBox"
-
+                  Foreground="White"
                   ItemsSource="{Binding Slices, ElementName=rotaryWheelDemo}"
                   SelectedItem="{Binding SelectedItemValue, ElementName=rotaryWheelDemo}"            
                   SelectionChanged="ComboBox_SelectionChanged"
@@ -43,5 +43,9 @@
                   Width="300"
                   MaxHeight="500"
                   Margin="0,-500,0,0" />
+        <Button x:Name="ButtonRandom"
+                Content="SpinRandom"
+                HorizontalAlignment="Center"
+                Click="ButtonRandom_Click" />
     </StackPanel>
 </Page>

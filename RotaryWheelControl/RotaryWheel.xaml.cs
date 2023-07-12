@@ -256,6 +256,20 @@ namespace RotaryWheelUserControl
             //Angle = 360 - finalAngle;
 
         }
+        public void Spin2(int index)
+        {
+            Random rnd = new Random();
+            SelectedItem = _pieSlices[index];
+            var finalAngle = SelectedItem.StartAngle + SelectedItem.Angle / 2;
+            // Tạo một số nguyên tố ngẫu nhiên để làm góc dừng
+            int stopAngle = rnd.Next(2, 19) * 20; // Góc dừng là 20 độ, từ 40 đến 360 độ
+            doubleAnimation.From = Angle;
+            doubleAnimation.To = 360 * 5 - finalAngle + stopAngle; // Thêm góc dừng vào góc kết thúc
+            storyBoard.SpeedRatio = 0.5;
+            storyBoard.Begin();
+            Debug.WriteLine("1st phase");
+            storyBoard.Completed += phase1;
+        }
 
         private void SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
         {

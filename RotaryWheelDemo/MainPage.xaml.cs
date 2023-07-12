@@ -2,6 +2,7 @@
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using RotaryWheelUserControl;
+using System;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -48,6 +49,14 @@ namespace RotaryWheelDemo
         public void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             
+        }
+
+        private void ButtonRandom_Click(object sender, RoutedEventArgs e)
+        {
+            Random random = new Random();
+            int selectedIndex = random.Next(rotaryWheelDemo.Slices.Count);
+            comboBox.SelectedIndex = selectedIndex;
+            rotaryWheelDemo.Spin2(selectedIndex);
         }
     }
 }
