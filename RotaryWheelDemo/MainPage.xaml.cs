@@ -55,8 +55,8 @@ namespace RotaryWheelDemo
         {
             Random random = new Random();
             int selectedIndex = random.Next(rotaryWheelDemo.Slices.Count);
-            comboBox.SelectedIndex = selectedIndex;
-            rotaryWheelDemo.Spin2(selectedIndex);
+            
+            rotaryWheelDemo.Spin(selectedIndex);
         }
 
 
