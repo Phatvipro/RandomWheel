@@ -22,6 +22,7 @@ namespace RotaryWheelUserControl
         private readonly ObservableCollection<PieSlice> _pieSlices = new ObservableCollection<PieSlice>();
 
         public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler SpinEnded;
 
         private Color _backgroundColor = Colors.Black;
         public Color BackgroundColor
@@ -31,7 +32,7 @@ namespace RotaryWheelUserControl
         }
 
         private Color _foregroundColor = Colors.White;
-        public Color ForegroundColor
+        public Color ForegroundColor 
         {
             get { return _foregroundColor; }
             set { SetField(ref _foregroundColor, value); }
@@ -116,7 +117,7 @@ namespace RotaryWheelUserControl
 
                 if (SelectedItem != null)
                 {
-                    Angle = 360 - SelectedItem.Angle / 2;
+                    Angle = 360 - SelectedItem.Angle/2;
                 }
             };
 
@@ -149,23 +150,23 @@ namespace RotaryWheelUserControl
         {
             _pieSlices.Clear();
 
-            gridRotateTransform.CenterX = this.RenderSize.Width / 2;
-            gridRotateTransform.CenterY = this.RenderSize.Height / 2;
+            gridRotateTransform.CenterX = this.RenderSize.Width/2;
+            gridRotateTransform.CenterY = this.RenderSize.Height/2;
 
-            var startAngle = 0;
+            double startAngle = 0d;
             var color = BackgroundColor;
 
             if (Slices != null)
             {
                 foreach (var slice in Slices)
                 {
-                    var sliceSize = 360 / Slices.Count();
+                    double sliceSize = 360d/Slices.Count();
 
                     var pieSlice = new PieSlice
                     {
                         StartAngle = startAngle,
                         Angle = sliceSize,
-                        Radius = Size / 2,
+                        Radius = Size/2,
                         BackgroundColor = color,
                         Label = slice,
                         ForegroundColor = ForegroundColor,
@@ -193,7 +194,7 @@ namespace RotaryWheelUserControl
             SelectedItem = _pieSlices.SingleOrDefault(p => p.StartAngle <= angleFromYAxis && (p.StartAngle + p.Angle) > angleFromYAxis);
             var finalAngle = SelectedItem.StartAngle + SelectedItem.Angle / 2;
             doubleAnimation.From = Angle;
-            doubleAnimation.To = 360 - finalAngle;
+            doubleAnimation.To = 360  - finalAngle;
             storyBoard.SpeedRatio = 0.1;
             storyBoard.Begin();
             storyBoard.Completed += (_, args) =>
@@ -228,18 +229,25 @@ namespace RotaryWheelUserControl
         private void phase2(object _, object args)
         {
             storyBoard.Completed -= phase2;
+            storyBoard.Completed += phase3;
             storyBoard.SpeedRatio = 0.2;
             storyBoard.Begin();
             Debug.WriteLine("3rd phase");
+            
         }
+        private void phase3(object _, object args)
+        {
+            storyBoard.Completed -= phase3;
+            SpinEnded.Invoke(null,null);
 
+        }
         public void Spin(int index)
         {
             Random rnd = new Random();
             SelectedItem = _pieSlices[index];
             var finalAngle = SelectedItem.StartAngle + SelectedItem.Angle / 2;
             doubleAnimation.From = Angle;
-            doubleAnimation.To = 360 * 5 - finalAngle;
+            doubleAnimation.To = 360*5 - finalAngle;
             storyBoard.SpeedRatio = 0.5;
             storyBoard.Begin();
             Debug.WriteLine("1st phase");
@@ -248,6 +256,23 @@ namespace RotaryWheelUserControl
             //Angle = 360 - finalAngle;
 
         }
+        public void Spin2(int index)
+        {
+            Random rnd = new Random();
+            SelectedItem = _pieSlices[index];
+            var finalAngle = SelectedItem.StartAngle + SelectedItem.Angle / 2;
+
+            // Tạo một số nguyên tố ngẫu nhiên để làm góc dừng
+            int stopAngle = rnd.Next(2, 19) * 20; // Góc dừng là 20 độ, từ 40 đến 360 độ
+
+            doubleAnimation.From = Angle;
+            doubleAnimation.To = 360 * 5 - finalAngle + stopAngle; // Thêm góc dừng vào góc kết thúc
+            storyBoard.SpeedRatio = 0.5;
+            storyBoard.Begin();
+            Debug.WriteLine("1st phase");
+            storyBoard.Completed += phase1;
+        }
+
 
         private void SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
         {
