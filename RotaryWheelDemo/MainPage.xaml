@@ -16,5 +16,11 @@
         <TextBlock Text="{Binding SelectedItemValue, ElementName=rotaryWheelDemo}"  />
         <TextBox x:Name="input" AcceptsReturn="True"  />
         <Button x:Name="addtext_Click" Click=" UpdateSlicesButton_Click" Content="Add Text" />
+        
+        <Button x:Name="spinButton"
+                Content="Spin"
+                HorizontalAlignment="Center"
+                Click="spinButton_Click" />
+
     </StackPanel>
 </Page>
