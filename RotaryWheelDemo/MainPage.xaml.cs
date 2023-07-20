@@ -15,7 +15,8 @@ namespace RotaryWheelDemo
     {
         public MainPage()
         {
-            this.InitializeComponent();          
+            this.InitializeComponent();
+            textBoxabc.Text = "a\rb\rc\rd\re";
             rotaryWheelDemo.PropertyChanged += RotaryWheelDemo_PropertyChanged;
             rotaryWheelDemo.SpinEnded += (e, a) =>
             {
@@ -29,34 +30,34 @@ namespace RotaryWheelDemo
             switch (e.PropertyName)
             {
                 case "SelectedItemValue":
-                {
-                    Debug.WriteLine(rotaryWheel.SelectedItemValue);
-                    break;
-                }
+                    {
+                        Debug.WriteLine(rotaryWheel.SelectedItemValue);
+                        break;
+                    }
             }
 
         }
         private void spinButton_Click(object sender, RoutedEventArgs e)
         {
-            
-            rotaryWheelDemo.Spin(comboBox.SelectedIndex);           
+            if (comboBox.SelectedIndex < 0)
+            {
+                new Result("Please select result")
+                {
+                    Title = "ERROR"
+                }.ShowAsync();
+            }
+            else
+                rotaryWheelDemo.Spin(comboBox.SelectedIndex);
         }
         private void TextBox_TextChanging(TextBox sender, TextBoxTextChangingEventArgs args)
         {
+            textBoxabc.Text = textBoxabc.Text.Replace("\r\r", "\r");
             rotaryWheelDemo.Slices = textBoxabc.Text.Trim().Split('\r');
-        }
-
-        public void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            
         }
 
         private void ButtonRandom_Click(object sender, RoutedEventArgs e)
         {
-            Random random = new Random();
-            int selectedIndex = random.Next(rotaryWheelDemo.Slices.Count);
-            comboBox.SelectedIndex = selectedIndex;
-            rotaryWheelDemo.Spin2(selectedIndex);
+            rotaryWheelDemo.Spin2();
         }
     }
 }
