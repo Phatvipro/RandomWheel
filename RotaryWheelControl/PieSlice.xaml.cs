@@ -92,7 +92,7 @@ namespace RotaryWheelUserControl
             textBlock.Foreground = new SolidColorBrush(this.ForegroundColor);
             textBlockRotate.Angle = StartAngle + Angle / 2;
 
-            var newPoint = QuadrantHelper.Calculate(4*Radius/5, StartAngle, Angle);
+            var newPoint = QuadrantHelper.Calculate(4d * Radius / 5d, StartAngle, Angle);
             textBlockTranslate.X = newPoint.X;
             textBlockTranslate.Y = newPoint.Y;
         }
